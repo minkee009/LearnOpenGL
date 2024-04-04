@@ -7,6 +7,33 @@ int WINDOW_WIDTH = 800;
 int WINDOW_HEIGHT = 600;
 const char WINDOW_NAME[] = "Learn OpenGL - 01 : Create Window";
 
+void OnFramebufferSizeChange(GLFWwindow* window, int width, int height)
+{
+    SPDLOG_INFO("framebuffer size changed: ({} X {})",width,height);
+    glViewport(0,0,width,height);
+}
+
+void OnKeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    SPDLOG_INFO("key : {}, scancode : {}, action : {}, mods : {}{}{}",
+    key,
+    scancode,
+    action == GLFW_PRESS ?  "Pressed" :
+    action == GLFW_RELEASE ? "Released" :
+    action == GLFW_REPEAT ? "Repeat" : "Unknown",
+    mods & GLFW_MOD_CONTROL ? "C" : "-",
+    mods & GLFW_MOD_SHIFT ? "S" : "-",
+    mods & GLFW_MOD_ALT ? "A" : "-");
+    if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+}
+
+void Render()
+{
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
 int main()
 {
     SPDLOG_INFO("Start program");
@@ -32,14 +59,30 @@ int main()
         glfwTerminate();
         return -1;
     }
+
     glfwMakeContextCurrent(window);
+
+    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        SPDLOG_ERROR("Failed to initialize glad");
+        glfwTerminate();
+        return -1;
+    }
+
+    const GLubyte* glVersion = glGetString(GL_VERSION);
+    SPDLOG_INFO("OpenGL context version: {}",(const char*)glVersion);
+
+    OnFramebufferSizeChange(window,WINDOW_WIDTH,WINDOW_HEIGHT);
+    glfwSetFramebufferSizeCallback(window, OnFramebufferSizeChange); 
+    glfwSetKeyCallback(window,OnKeyEvent);
 
     SPDLOG_INFO("Start Main Loop");
     while (!glfwWindowShouldClose(window))
     {
+        Render();
+        glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
 
     glfwTerminate();
     return 0;
