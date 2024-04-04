@@ -37,3 +37,7 @@ src/LearnOpenGL.vcxproj.user
 src/LearnOpenGL.vcxproj.filters
 src/LearnOpenGL.vcxproj
 /.vs
+/.vscode
+/app
+/include
+src/glad.c
