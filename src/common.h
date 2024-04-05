@@ -8,7 +8,7 @@
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
 
-#define CLASS_PTR(klassName) \ 
+#define CLASS_PTR(klassName) \
 class klassName; \
 using klassName ## UPtr = std::unique_ptr<klassName>; \
 using klassName ## Ptr = std::shared_ptr<klassName>; \
