@@ -1,7 +1,7 @@
-#include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
+#include <iostream>
 
 int WINDOW_WIDTH = 800;
 int WINDOW_HEIGHT = 600;
