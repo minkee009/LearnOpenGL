@@ -2,10 +2,10 @@
 #include <fstream>
 #include <sstream>
 
-std::optional<std::string> LoadTextFile(const std::string& filename)
+std::optional<std::string> LoadTextFile(const std::string& filename) 
 {
 	std::ifstream fin(filename);
-	if (!fin.is_open())
+	if (!fin.is_open()) 
 	{
 		SPDLOG_ERROR("failed to open file: {}", filename);
 		return {};
