@@ -41,3 +41,5 @@ src/LearnOpenGL.vcxproj
 /app
 /include
 src/glad.c
+/src/x64
+/x64
