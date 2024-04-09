@@ -19,10 +19,18 @@ bool Context::Init() {
         return false;
     SPDLOG_INFO("program id: {}", m_program->Get());
 
-    glClearColor(0.1f, 0.2f, 0.3f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    uint32_t vao = 0;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
     return true;
 }
 
 void Context::Render() {
     glClear(GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(m_program->Get());
+    glDrawArrays(GL_POINTS, 0, 1);
 }

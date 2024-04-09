@@ -77,6 +77,7 @@ int main() {
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+	context.reset();
 
 	glfwTerminate();
 	return 0;
