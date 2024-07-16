@@ -27,6 +27,60 @@ void OnKeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 		glfwSetWindowShouldClose(window, true);
 }
 
+#pragma region Joystick Method
+void OnJoystickEvent(int jid, int event) {
+	SPDLOG_INFO("jid: {}, event: {}",jid, event);
+}
+
+bool InitJosystick(const char* name, int* jid) {
+	for(int i = 0; i < GLFW_JOYSTICK_LAST; i++) {
+		if(glfwJoystickPresent(i)) {
+			name = glfwGetJoystickName(i);
+			SPDLOG_INFO("joystick1: {}",name);
+			glfwSetJoystickCallback(OnJoystickEvent);
+			*jid = i;
+			return true;
+		}
+		else {
+			SPDLOG_ERROR("조이스틱 정보를 가져오는데 실패했습니다.");
+			return false;
+		}
+	}
+}
+
+void CheckJoystickState(int jid, GLFWgamepadstate* state) {
+	if(!glfwGetGamepadState(jid, state)) {
+		return;
+	}
+	
+	for(int i = 0; i < 15; i++) {
+		if(state->buttons[i] == GLFW_PRESS) {
+			const char* buttonName;
+
+			switch(i) {
+				case GLFW_GAMEPAD_BUTTON_A:
+					buttonName = "Button A";
+					break;
+				case GLFW_GAMEPAD_BUTTON_B:
+					buttonName = "Button B";
+					break;
+				case GLFW_GAMEPAD_BUTTON_X:
+					buttonName = "Button X";
+					break;
+				case GLFW_GAMEPAD_BUTTON_Y:
+					buttonName = "Button Y";
+					break;
+				default:
+					buttonName = std::to_string(i).c_str();
+					break;
+			}
+
+			SPDLOG_INFO("Pressed: {}", buttonName);
+		}
+	}
+}
+#pragma endregion
+
 int main() {
 	SPDLOG_INFO("Start program");
 
@@ -70,9 +124,16 @@ int main() {
 	OnFramebufferSizeChange(window, WINDOW_WIDTH, WINDOW_HEIGHT);
 	glfwSetFramebufferSizeCallback(window, OnFramebufferSizeChange);
 	glfwSetKeyCallback(window, OnKeyEvent);
-
+	// const char* joystickName;
+	// int currentJid = -1;
+	// bool isJoystickConnected = InitJosystick(joystickName, &currentJid);
+	
 	SPDLOG_INFO("Start Main Loop");
+	// GLFWgamepadstate joystickState;
 	while (!glfwWindowShouldClose(window)) {
+		// if(isJoystickConnected)
+		// 	CheckJoystickState(currentJid, &joystickState);
+		
 		context->Render();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
