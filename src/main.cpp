@@ -56,6 +56,7 @@ void CheckJoystickState(int jid, GLFWgamepadstate* state) {
 	for(int i = 0; i < 15; i++) {
 		if(state->buttons[i] == GLFW_PRESS) {
 			const char* buttonName;
+			bool inValidName = false;
 
 			switch(i) {
 				case GLFW_GAMEPAD_BUTTON_A:
@@ -71,11 +72,13 @@ void CheckJoystickState(int jid, GLFWgamepadstate* state) {
 					buttonName = "Button Y";
 					break;
 				default:
-					buttonName = std::to_string(i).c_str();
+					SPDLOG_INFO("Pressed: {}", std::to_string(i).c_str());
+					inValidName = true;
 					break;
 			}
 
-			SPDLOG_INFO("Pressed: {}", buttonName);
+			if(!inValidName)
+				SPDLOG_INFO("Pressed: {}", buttonName);
 		}
 	}
 }
@@ -124,15 +127,15 @@ int main() {
 	OnFramebufferSizeChange(window, WINDOW_WIDTH, WINDOW_HEIGHT);
 	glfwSetFramebufferSizeCallback(window, OnFramebufferSizeChange);
 	glfwSetKeyCallback(window, OnKeyEvent);
-	// const char* joystickName;
-	// int currentJid = -1;
-	// bool isJoystickConnected = InitJosystick(joystickName, &currentJid);
+	//const char* joystickName = nullptr;
+	//int currentJid = -1;
+	//bool isJoystickConnected = InitJosystick(joystickName, &currentJid);
 	
 	SPDLOG_INFO("Start Main Loop");
-	// GLFWgamepadstate joystickState;
+	//GLFWgamepadstate joystickState;
 	while (!glfwWindowShouldClose(window)) {
-		// if(isJoystickConnected)
-		// 	CheckJoystickState(currentJid, &joystickState);
+		//if(isJoystickConnected)
+			//CheckJoystickState(currentJid, &joystickState);
 		
 		context->Render();
 		glfwSwapBuffers(window);
