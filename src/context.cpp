@@ -44,6 +44,10 @@ bool Context::Init() {
 		return false;
 	SPDLOG_INFO("program id: {}", m_program->Get());
 
+	auto loc = glGetUniformLocation(m_program->Get(), "color");
+	m_program->Use();
+	glUniform4f(loc, 1.0f, 1.0f, 0.0f, 1.0f);
+
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	return true;
@@ -52,6 +56,14 @@ bool Context::Init() {
 void Context::Render() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	static float time = 0.0f;
+	float t = sinf(time) * 0.5f + 0.5f;
+	static GLint loc = glGetUniformLocation(m_program->Get(),"color");
+
 	m_program->Use();
+	glUniform4f(loc, t*t, 2.0f * t * (1.0f - t),(1.0f - t) * (1.0f - t), 1.0f);
+
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	time += 0.016f;
 }
