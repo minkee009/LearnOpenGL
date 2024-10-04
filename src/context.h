@@ -17,7 +17,7 @@ private:
     bool Init();
     ProgramUPtr m_program;
 
-    VertexLayoutUPtr m_vertexArrayObject;
+    VertexLayoutUPtr m_vertexLayout;
     BufferUPtr m_vertexBuffer;
     BufferUPtr m_indexBuffer;
 };
