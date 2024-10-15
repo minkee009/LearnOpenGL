@@ -17,8 +17,8 @@ bool Context::Init() {
 	};
 
 	uint32_t indices[] = { // note that we start from 0!
-		0, 1, 3, // first triangle
-		1, 2, 3, // second triangle
+		0, 3, 1, // first triangle
+		3, 2, 1, // second triangle
 	};
 
 	//VAO 생성
