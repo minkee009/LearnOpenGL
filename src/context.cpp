@@ -1,4 +1,5 @@
 #include "context.h"
+#include "image.h"
 
 ContextUPtr Context::Create() {
 	auto context = ContextUPtr(new Context());
@@ -45,11 +46,13 @@ bool Context::Init() {
 		return false;
 	SPDLOG_INFO("program id: {}", m_program->Get());
 
-	auto loc = glGetUniformLocation(m_program->Get(), "color");
-	m_program->Use();
-	glUniform4f(loc, 1.0f, 1.0f, 0.0f, 1.0f);
-
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+	auto image = Image::Load("./resources/container.jpg");
+	if (!image)
+		return false;
+	SPDLOG_INFO("image: {}x{}, {} channels",
+		image->GetWidth(), image->GetHeight(), image->GetChannelCount());
 
 	return true;
 }
