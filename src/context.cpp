@@ -50,22 +50,20 @@ bool Context::Init() {
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	auto image = Image::Load("./resources/container.jpg");
-	if (!image)
-		return false;
-	SPDLOG_INFO("image: {}x{}, {} channels",
-		image->GetWidth(), image->GetHeight(), image->GetChannelCount());
+	auto image = Image::Image::Load("./resources/container.jpg");
+	m_texture = Texture::CreateFromImage(image.get());
 
-	glGenTextures(1, &m_texture);
-	glBindTexture(GL_TEXTURE_2D, m_texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	auto image2 = Image::Load("./resources/awesomeface.png");
+	m_texture2 = Texture::CreateFromImage(image2.get());
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
-				 image->GetWidth(), image->GetHeight(), 0,
-				 GL_RGB, GL_UNSIGNED_BYTE, image->GetData());
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_texture->Get());
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, m_texture2->Get());
+
+	m_program->Use();
+	glUniform1i(glGetUniformLocation(m_program->Get(), "tex"), 0);
+	glUniform1i(glGetUniformLocation(m_program->Get(), "tex2"), 1);
 
 	return true;
 }
