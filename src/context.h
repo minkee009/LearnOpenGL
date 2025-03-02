@@ -11,7 +11,7 @@
 CLASS_PTR(Context)
 class Context {
 public:
-    static ContextUPtr Create();
+    static ContextUPtr Create(GLFWwindow* window);
     void Render();    
 private:
     Context() {}
@@ -23,6 +23,8 @@ private:
     BufferUPtr m_indexBuffer;
     TextureUPtr m_texture;
     TextureUPtr m_texture2;
+
+    GLFWwindow* m_window;
 };
 
 #endif // __CONTEXT_H__

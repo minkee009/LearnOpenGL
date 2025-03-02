@@ -117,7 +117,7 @@ int main() {
 	const GLubyte* glVersion = glGetString(GL_VERSION);
 	SPDLOG_INFO("OpenGL context version: {}", (const char*)glVersion);
 
-	auto context = Context::Create();
+	auto context = Context::Create(window);
 	if(!context){
 		SPDLOG_ERROR("failed to create glContext");
 		glfwTerminate();
@@ -131,12 +131,39 @@ int main() {
 	//int currentJid = -1;
 	//bool isJoystickConnected = InitJosystick(joystickName, &currentJid);
 	
+	double prevMousePosX, prevMousePosY = 0;
+	bool clickCheck = false;
+	glfwGetCursorPos(window,&prevMousePosX,&prevMousePosY);
+
 	SPDLOG_INFO("Start Main Loop");
 	//GLFWgamepadstate joystickState;
 	while (!glfwWindowShouldClose(window)) {
 		//if(isJoystickConnected)
 			//CheckJoystickState(currentJid, &joystickState);
-		
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2))
+		{
+			if (!clickCheck)
+			{
+				prevMousePosX = WINDOW_WIDTH / 2;
+				prevMousePosY = WINDOW_HEIGHT / 2;
+			}
+			clickCheck = true;
+
+			double curMousePosX, curMousePosY = 0;
+			glfwGetCursorPos(window, &curMousePosX, &curMousePosY);
+
+			auto mouseDeltaX = curMousePosX - prevMousePosX;
+			auto mouseDeltaY = curMousePosY - prevMousePosY;
+
+			glfwSetCursorPos(window, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		}
+		else
+		{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+
+
 		context->Render();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
