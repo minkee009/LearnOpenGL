@@ -6,11 +6,13 @@
 
 int WINDOW_WIDTH = 800;
 int WINDOW_HEIGHT = 600;
-const char WINDOW_NAME[] = "Learn OpenGL - 01 : Create Window";
+const char WINDOW_NAME[] = "Learn OpenGL";
 
 void OnFramebufferSizeChange(GLFWwindow* window, int width, int height) {
 	SPDLOG_INFO("framebuffer size changed: ({} X {})", width, height);
 	glViewport(0, 0, width, height);
+	auto context = (Context*)glfwGetWindowUserPointer(window);
+	context->Reshape(width, height);
 }
 
 void OnKeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -25,6 +27,12 @@ void OnKeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 		mods & GLFW_MOD_ALT ? "A" : "-");
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+}
+
+void OnCursorPos(GLFWwindow *window, double x, double y)
+{
+	auto context = (Context *)glfwGetWindowUserPointer(window);
+	context->MouseMove(x, y);
 }
 
 #pragma region Joystick Method
@@ -117,16 +125,18 @@ int main() {
 	const GLubyte* glVersion = glGetString(GL_VERSION);
 	SPDLOG_INFO("OpenGL context version: {}", (const char*)glVersion);
 
-	auto context = Context::Create(window);
+	auto context = Context::Create();
 	if(!context){
 		SPDLOG_ERROR("failed to create glContext");
 		glfwTerminate();
 		return -1;
 	}
+	glfwSetWindowUserPointer(window, context.get());
 
 	OnFramebufferSizeChange(window, WINDOW_WIDTH, WINDOW_HEIGHT);
 	glfwSetFramebufferSizeCallback(window, OnFramebufferSizeChange);
 	glfwSetKeyCallback(window, OnKeyEvent);
+    //glfwSetCursorPosCallback(window, OnCursorPos);
 	//const char* joystickName = nullptr;
 	//int currentJid = -1;
 	//bool isJoystickConnected = InitJosystick(joystickName, &currentJid);
@@ -146,6 +156,7 @@ int main() {
 			{
 				prevMousePosX = WINDOW_WIDTH / 2;
 				prevMousePosY = WINDOW_HEIGHT / 2;
+				glfwSetCursorPos(window, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 			}
 			clickCheck = true;
 
@@ -157,12 +168,14 @@ int main() {
 
 			glfwSetCursorPos(window, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+			context->ProcessInput(window);
+			context->MouseMove(mouseDeltaX,mouseDeltaY);
 		}
 		else
 		{
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			clickCheck = false;
 		}
-
 
 		context->Render();
 		glfwSwapBuffers(window);
